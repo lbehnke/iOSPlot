@@ -65,6 +65,8 @@
 		_legendFont = [UIFont boldSystemFontOfSize:10];
         _numYIntervals = 5;
         _numXIntervals = 1;
+        _marginTop = 10;
+        _marginBottom = 6;
 		
     }
     return self;
@@ -79,8 +81,8 @@
     int n_div;
     int power;
     float scale_min, scale_max, div_height;
-    float top_margin = 35;
-    float bottom_margin = 25;
+    float top_margin = _marginTop;
+    float bottom_margin = _marginBottom;
 	float x_label_height = 20;
 	
     if (self.autoscaleYAxis) {

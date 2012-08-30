@@ -58,4 +58,7 @@
 @property (nonatomic, assign) BOOL autoscaleYAxis;
 @property (nonatomic, assign) NSUInteger numYIntervals; // Use n*5 for best results
 @property (nonatomic, assign) NSUInteger numXIntervals;
+@property (nonatomic, assign) NSUInteger marginTop;
+@property (nonatomic, assign) NSUInteger marginBottom;
+
 @end
