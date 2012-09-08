@@ -321,6 +321,29 @@
         
         y_level = y + 15;
     }
+    
+    /* Helper lines */
+    CGFloat dashArray[] = {2,2,2,2};
+    CGContextSetLineDash(ctx, 3, dashArray, 4);
+    CGColorRef helperLineColor = [[UIColor redColor] CGColor];
+    CGContextSetStrokeColorWithColor(ctx, helperLineColor);
+    CGContextSetFillColorWithColor(ctx, helperLineColor);
+    CGContextSetLineWidth(ctx, 1);
+    for (NSNumber* val in [helperLines allKeys]) {
+        int yHelper = top_margin + (scale_max-[val intValue])/self.interval*div_height;
+        CGContextMoveToPoint(ctx, 30, yHelper);
+        CGContextAddLineToPoint(ctx, self.frame.size.width-30, yHelper);
+        CGContextStrokePath(ctx);
+        
+        
+        //        NSString* label = [helperLines objectForKey:val];
+        //        CGRect textFrame = CGRectMake(self.frame.size.width-250, yHelper, 200, x_label_height);
+        //        [label drawInRect:textFrame
+        //                 withFont:self.helperLineFont
+        //            lineBreakMode:UILineBreakModeWordWrap
+        //                alignment:UITextAlignmentCenter
+        //         
+        //         ];
 }
 
 
