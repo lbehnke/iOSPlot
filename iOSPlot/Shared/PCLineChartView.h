@@ -60,5 +60,5 @@
 @property (nonatomic, assign) NSUInteger numXIntervals;
 @property (nonatomic, assign) NSUInteger marginTop;
 @property (nonatomic, assign) NSUInteger marginBottom;
-
+@property (nonatomic, strong) NSDictionary* helperLines;
 @end

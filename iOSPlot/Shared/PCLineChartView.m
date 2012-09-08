@@ -49,6 +49,8 @@
 
 @implementation PCLineChartView
 
+@synthesize helperLines;
+
 - (id)initWithFrame:(CGRect)frame
 {
     self = [super initWithFrame:frame];
@@ -67,7 +69,6 @@
         _numXIntervals = 1;
         _marginTop = 10;
         _marginBottom = 6;
-		
     }
     return self;
 }
@@ -124,6 +125,21 @@
         CGContextMoveToPoint(ctx, 30, y);
         CGContextAddLineToPoint(ctx, self.frame.size.width-30, y);
         CGContextStrokePath(ctx);
+        
+        /* Helper lines */
+        CGContextSetLineWidth(ctx, 2);
+        CGContextSetRGBStrokeColor(ctx, 1.0f, 0.2f, 0.2f, 0.2f);
+        
+        for (NSNumber* val in [helperLines allKeys]) {
+            NSString* label = [helperLines objectForKey:val];
+            //float y_axis = scale_max - i*self.interval;
+            
+            int yHelper = top_margin + [val intValue];
+            CGContextMoveToPoint(ctx, 30, [val intValue]);
+            CGContextAddLineToPoint(ctx, self.frame.size.width-30, yHelper);
+            CGContextStrokePath(ctx);
+        }
+
     }
     
     float margin = 45;
