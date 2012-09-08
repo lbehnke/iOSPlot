@@ -164,8 +164,6 @@
 			nextStartDeg = endDeg;
 		}
 		
-		nextStartDeg = 0;
-		endDeg = 0;
 		float max_text_width = x -  10;
 		for (int i=0; i<[tmpComponents count]; i++)
 		{
@@ -453,7 +451,7 @@
 				[component.title drawInRect:titleFrame withFont:self.titleFont];
 				right_label_y += optimumSize.height + 10;
 			}
-			nextStartDeg = endDeg;
+
 		}
     }
 }
