@@ -1,34 +1,34 @@
 /**
  * Copyright (c) 2011 Muh Hon Cheng
  * Created by honcheng on 28/4/11.
- * 
- * Permission is hereby granted, free of charge, to any person obtaining 
- * a copy of this software and associated documentation files (the 
- * "Software"), to deal in the Software without restriction, including 
- * without limitation the rights to use, copy, modify, merge, publish, 
- * distribute, sublicense, and/or sell copies of the Software, and to 
- * permit persons to whom the Software is furnished to do so, subject 
+ *
+ * Permission is hereby granted, free of charge, to any person obtaining
+ * a copy of this software and associated documentation files (the
+ * "Software"), to deal in the Software without restriction, including
+ * without limitation the rights to use, copy, modify, merge, publish,
+ * distribute, sublicense, and/or sell copies of the Software, and to
+ * permit persons to whom the Software is furnished to do so, subject
  * to the following conditions:
- * 
- * The above copyright notice and this permission notice shall be 
+ *
+ * The above copyright notice and this permission notice shall be
  * included in all copies or substantial portions of the Software.
- * 
- * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT 
- * WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, 
- * INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF 
- * MERCHANTABILITY, FITNESS FOR A PARTICULAR 
- * PURPOSE AND NONINFRINGEMENT. IN NO EVENT 
- * SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE 
- * LIABLE FOR ANY CLAIM, DAMAGES OR OTHER 
- * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, 
- * TORT OR OTHERWISE, ARISING FROM, OUT OF OR 
- * IN CONNECTION WITH THE SOFTWARE OR 
+ *
+ * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT
+ * WARRANTY OF ANY KIND, EXPRESS OR IMPLIED,
+ * INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF
+ * MERCHANTABILITY, FITNESS FOR A PARTICULAR
+ * PURPOSE AND NONINFRINGEMENT. IN NO EVENT
+ * SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE
+ * LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+ * LIABILITY, WHETHER IN AN ACTION OF CONTRACT,
+ * TORT OR OTHERWISE, ARISING FROM, OUT OF OR
+ * IN CONNECTION WITH THE SOFTWARE OR
  * THE USE OR OTHER DEALINGS IN THE SOFTWARE.
- * 
+ *
  * @author 		Muh Hon Cheng <honcheng@gmail.com>
  * @copyright	2011	Muh Hon Cheng
  * @version
- * 
+ *
  */
 
 #import "PCLineChartView.h"
@@ -63,6 +63,7 @@
 		_minValue = 0;
 		_yLabelFont = [UIFont boldSystemFontOfSize:14];
 		_xLabelFont = [UIFont boldSystemFontOfSize:12];
+        _helperLineFont = [UIFont systemFontOfSize:10];
 		_valueLabelFont = [UIFont boldSystemFontOfSize:10];
 		_legendFont = [UIFont boldSystemFontOfSize:10];
         _numYIntervals = 5;
@@ -74,7 +75,7 @@
 }
 
 - (void)drawRect:(CGRect)rect
-{    
+{
     CGContextRef ctx = UIGraphicsGetCurrentContext();
     UIGraphicsPushContext(ctx);
     CGContextSetRGBFillColor(ctx, 0.2f, 0.2f, 0.2f, 1.0f);
@@ -88,7 +89,7 @@
 	
     if (self.autoscaleYAxis) {
         scale_min = 0.0;
-        power = floor(log10(self.maxValue/5)); 
+        power = floor(log10(self.maxValue/5));
         float increment = self.maxValue / (5 * pow(10,power));
         increment = (increment <= 5) ? ceil(increment) : 10;
         increment = increment * pow(10,power);
@@ -100,6 +101,17 @@
     }
     n_div = (scale_max-scale_min)/self.interval + 1;
     div_height = (self.frame.size.height-top_margin-bottom_margin-x_label_height)/(n_div-1);
+    float margin = 45;
+    float div_width;
+    if ([self.xLabels count] == 1)
+    {
+        div_width = 0;
+    }
+    else
+    {
+        div_width = (self.frame.size.width-2*margin)/([self.xLabels count]-1);
+    }
+    
     
     for (int i=0; i<n_div; i++)
     {
@@ -107,16 +119,16 @@
 		
         int y = top_margin + div_height*i;
         CGRect textFrame = CGRectMake(0,y-8,25,20);
-
-//        NSString *text = [NSString stringWithFormat:@"%.0f", y_axis];
-//        NSLog(@">>>>%@", text);
-
+        
+        //        NSString *text = [NSString stringWithFormat:@"%.0f", y_axis];
+        //        NSLog(@">>>>%@", text);
+        
         NSString *formatString = [NSString stringWithFormat:@"%%.%if", (power < 0) ? -power : 0];
         NSString *text = [NSString stringWithFormat:formatString, y_axis];
-
-        [text drawInRect:textFrame 
-				withFont:self.yLabelFont 
-		   lineBreakMode:UILineBreakModeWordWrap 
+        
+        [text drawInRect:textFrame
+				withFont:self.yLabelFont
+		   lineBreakMode:UILineBreakModeWordWrap
 			   alignment:UITextAlignmentRight];
 		
 		// These are "grid" lines
@@ -129,29 +141,8 @@
         /* Helper lines */
         CGContextSetLineWidth(ctx, 2);
         CGContextSetRGBStrokeColor(ctx, 1.0f, 0.2f, 0.2f, 0.2f);
-        
-        for (NSNumber* val in [helperLines allKeys]) {
-            NSString* label = [helperLines objectForKey:val];
-            //float y_axis = scale_max - i*self.interval;
-            
-            int yHelper = top_margin + [val intValue];
-            CGContextMoveToPoint(ctx, 30, [val intValue]);
-            CGContextAddLineToPoint(ctx, self.frame.size.width-30, yHelper);
-            CGContextStrokePath(ctx);
-        }
-
     }
     
-    float margin = 45;
-    float div_width;
-    if ([self.xLabels count] == 1)
-    {
-        div_width = 0;
-    }
-    else
-    {
-        div_width = (self.frame.size.width-2*margin)/([self.xLabels count]-1);
-    }
     
     for (NSUInteger i=0; i<[self.xLabels count]; i++)
     {
@@ -164,7 +155,7 @@
                   lineBreakMode:UILineBreakModeWordWrap
                       alignment:UITextAlignmentCenter];
         };
-
+        
     }
     
 	CGColorRef shadowColor = [[UIColor lightGrayColor] CGColor];
@@ -263,9 +254,9 @@
 						CGContextSetRGBFillColor(ctx, 0.0f, 0.0f, 0.0f, 1.0f);
 						NSString *perc_label = [NSString stringWithFormat:[[self.components objectAtIndex:j] labelFormat], value];
 						CGRect textFrame = CGRectMake(x-25,y1, 50,20);
-						[perc_label drawInRect:textFrame 
-									  withFont:self.valueLabelFont 
-								 lineBreakMode:UILineBreakModeWordWrap 
+						[perc_label drawInRect:textFrame
+									  withFont:self.valueLabelFont
+								 lineBreakMode:UILineBreakModeWordWrap
 									 alignment:UITextAlignmentCenter];
 						y_level = y1 + 20;
 					}
@@ -274,9 +265,9 @@
 						CGContextSetRGBFillColor(ctx, 0.0f, 0.0f, 0.0f, 1.0f);
 						NSString *perc_label = [NSString stringWithFormat:[[self.components objectAtIndex:j] labelFormat], value];
 						CGRect textFrame = CGRectMake(x-25,y2, 50,20);
-						[perc_label drawInRect:textFrame 
-									  withFont:self.valueLabelFont 
-								 lineBreakMode:UILineBreakModeWordWrap 
+						[perc_label drawInRect:textFrame
+									  withFont:self.valueLabelFont
+								 lineBreakMode:UILineBreakModeWordWrap
 									 alignment:UITextAlignmentCenter];
 						y_level = y2 + 20;
 					}
@@ -285,9 +276,9 @@
 						CGContextSetRGBFillColor(ctx, 0.0f, 0.0f, 0.0f, 1.0f);
 						NSString *perc_label = [NSString stringWithFormat:[[self.components objectAtIndex:j] labelFormat], value];
 						CGRect textFrame = CGRectMake(x-50,y-10, 50,20);
-						[perc_label drawInRect:textFrame 
-									  withFont:self.valueLabelFont 
-								 lineBreakMode:UILineBreakModeWordWrap 
+						[perc_label drawInRect:textFrame
+									  withFont:self.valueLabelFont
+								 lineBreakMode:UILineBreakModeWordWrap
 									 alignment:UITextAlignmentCenter];
 						y_level = y1 + 20;
 					}
@@ -301,7 +292,6 @@
 	NSSortDescriptor *sortDesc = [NSSortDescriptor sortDescriptorWithKey:@"y" ascending:YES];
 	[legends sortUsingDescriptors:[NSArray arrayWithObject:sortDesc]];
 	
-    //CGContextSetRGBFillColor(ctx, 0.0f, 0.0f, 0.0f, 1.0f);
     float y_level = 0;
     for (NSMutableDictionary *legend in legends)
     {
@@ -321,6 +311,34 @@
         
         y_level = y + 15;
     }
+    
+    
+    
+    /* Helper lines */
+    CGFloat dashArray[] = {2,2,2,2};
+    CGContextSetLineDash(ctx, 3, dashArray, 4);
+    CGColorRef helperLineColor = [[UIColor redColor] CGColor];
+    CGContextSetStrokeColorWithColor(ctx, helperLineColor);
+    CGContextSetFillColorWithColor(ctx, helperLineColor);
+    CGContextSetLineWidth(ctx, 1);
+    for (NSNumber* val in [helperLines allKeys]) {
+        int yHelper = top_margin + (scale_max-[val intValue])/self.interval*div_height;
+        CGContextMoveToPoint(ctx, 30, yHelper);
+        CGContextAddLineToPoint(ctx, self.frame.size.width-30, yHelper);
+        CGContextStrokePath(ctx);
+        
+        
+        //        NSString* label = [helperLines objectForKey:val];
+        //        CGRect textFrame = CGRectMake(self.frame.size.width-250, yHelper, 200, x_label_height);
+        //        [label drawInRect:textFrame
+        //                 withFont:self.helperLineFont
+        //            lineBreakMode:UILineBreakModeWordWrap
+        //                alignment:UITextAlignmentCenter
+        //         
+        //         ];
+    }
+    
+    
 }
 
 
